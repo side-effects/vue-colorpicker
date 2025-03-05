@@ -55,6 +55,11 @@
             :color="modelRgba"
             @inputColor="inputRgba"
         />
+        <Box
+            name="RAL"
+            :color="modelRal"
+            @inputColor="inputRal"
+        />
         <Colors
             :color="rgbaString"
             :colors-default="colorsDefault"
@@ -73,6 +78,8 @@ import Preview from './Preview.vue'
 import Sucker from './Sucker.vue'
 import Box from './Box.vue'
 import Colors from './Colors.vue'
+import { HEX2RAL } from '../schema/Classic.js';
+
 export default {
     components: {
         Saturation,
@@ -119,11 +126,13 @@ export default {
     },
     data() {
         return {
+            HEX2RAL,
             hueWidth: 15,
             hueHeight: 152,
             previewHeight: 30,
             modelRgba: '',
             modelHex: '',
+            modelRal: '',
             r: 0,
             g: 0,
             b: 0,
@@ -169,6 +178,10 @@ export default {
         },
         hexString() {
             return this.rgb2hex(this.rgba, true)
+        },
+        ralString() {
+            const ralValue = this.HEX2RAL[this.hexString];
+            return ralValue ? ralValue.replace(/^(RAL)(\d{4})$/, '$1 $2') : '';
         }
     },
     created() {
@@ -206,19 +219,47 @@ export default {
         inputHex(color) {
             const { r, g, b, a, h, s, v } = this.setColorValue(color)
             Object.assign(this, { r, g, b, a, h, s, v })
-            this.modelHex = color
-            this.modelRgba = this.rgbaStringShort
+            this.setText();
             this.$nextTick(() => {
                 this.$refs.saturation.renderColor()
                 this.$refs.saturation.renderSlide()
                 this.$refs.hue.renderSlide()
             })
         },
+        inputRal(color) {
+            const RALRegex = /^(?:RAL\s?)?(\d{4})$/i;
+            const match = color.match(RALRegex);
+            if (!match) {
+                return;
+            }
+            // Normalize RAL colors to the format RAL XXXX
+            const RALNormalized = `RAL${match[1]}`;
+
+            const hex = this.getRalToHex(RALNormalized);
+            if (!hex) {
+                return;
+            }
+
+            const { r, g, b, a, h, s, v } = this.setColorValue(hex);
+            Object.assign(this, { r, g, b, a, h, s, v });
+            this.setText();
+            this.$nextTick(() => {
+                this.$refs.saturation.renderColor();
+                this.$refs.saturation.renderSlide();
+                this.$refs.hue.renderSlide();
+            });
+        },
+        getRalToHex(normalizedRAL) {
+            for (const hex in this.HEX2RAL) {
+                if (this.HEX2RAL[hex] === normalizedRAL) {
+                    return hex;
+                }
+            }
+        },
         inputRgba(color) {
             const { r, g, b, a, h, s, v } = this.setColorValue(color)
             Object.assign(this, { r, g, b, a, h, s, v })
-            this.modelHex = this.hexString
-            this.modelRgba = color
+            this.setText();
             this.$nextTick(() => {
                 this.$refs.saturation.renderColor()
                 this.$refs.saturation.renderSlide()
@@ -228,6 +269,7 @@ export default {
         setText() {
             this.modelHex = this.hexString
             this.modelRgba = this.rgbaStringShort
+            this.modelRal = this.ralString;
         },
         openSucker(isOpen) {
             this.$emit('openSucker', isOpen)
