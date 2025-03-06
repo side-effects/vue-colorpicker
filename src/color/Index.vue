@@ -227,6 +227,11 @@ export default {
             })
         },
         inputRal(color) {
+            // If the user decides to delete the whole RAL string, the color will be reset to black.
+            if (!color || !color.trim() === '') {
+                return this.inputHex('#000000');
+            }
+
             const RALRegex = /^(?:RAL\s?)?(\d{4})$/i;
             const match = color.match(RALRegex);
             if (!match) {
