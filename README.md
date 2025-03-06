@@ -1,22 +1,15 @@
-# vue-colorpicker
+# vue-colorpicker for vHUB
 
-## [LiveDemo](https://caohenghu.github.io/vue-colorpicker/)
+This fork of vue-colorpicker now includes bidirectional conversion between HEX and RAL. If you're not familiar with the RAL colour system, you can learn more about it at this Wikipedia page https://en.wikipedia.org/wiki/RAL_colour_standard
 
-![preview-dark](https://raw.githubusercontent.com/caohenghu/vue-colorpicker/master/src/img/preview-dark.jpg)
-![preview-light](https://raw.githubusercontent.com/caohenghu/vue-colorpicker/master/src/img/preview-light.jpg)
+## Preview of the component
+
+![Preview of the colorpicker in dark mode with a RAL 1000 color inserted](image.png)
 
 ## Install
 
-```bash
-$ npm install @caohenghu/vue-colorpicker
-```
-
-```bash
-$ yarn add @caohenghu/vue-colorpicker
-```
-
-```bash
-$ pnpm add @caohenghu/vue-colorpicker
+```bash or cmd
+$ npm install --save side-effects/vue-colorpicker
 ```
 
 ## Example
@@ -27,11 +20,7 @@ $ pnpm add @caohenghu/vue-colorpicker
         <color-picker
             theme="light"
             :color="color"
-            :sucker-hide="false"
-            :sucker-canvas="suckerCanvas"
-            :sucker-area="suckerArea"
             @changeColor="changeColor"
-            @openSucker="openSucker"
         />
     </div>
 </template>
@@ -46,24 +35,12 @@ $ pnpm add @caohenghu/vue-colorpicker
         data() {
             return {
                 color: '#59c7f9',
-                suckerCanvas: null,
-                suckerArea: [],
-                isSucking: false,
             }
         },
         methods: {
             changeColor(color) {
                 const { r, g, b, a } = color.rgba
                 this.color = `rgba(${r}, ${g}, ${b}, ${a})`
-            },
-            openSucker(isOpen) {
-                if (isOpen) {
-                    // ... canvas be created
-                    // this.suckerCanvas = canvas
-                    // this.suckerArea = [x1, y1, x2, y2]
-                } else {
-                    // this.suckerCanvas && this.suckerCanvas.remove
-                }
             },
         },
     }
@@ -78,9 +55,6 @@ $ pnpm add @caohenghu/vue-colorpicker
 | color              | String            | `#000000`                                                                                                                                                                                | `rgba` or `hex`                         |
 | colors-default     | Array             | `['#000000', '#FFFFFF', '#FF1900', '#F47365', '#FFB243', '#FFE623', '#6EFF2A', '#1BC7B1', '#00BEFF', '#2E81FF', '#5D61FF', '#FF89CF', '#FC3CAD', '#BF3DCE', '#8E00A7', 'rgba(0,0,0,0)']` | like `['#ff00ff', '#0f0f0f', ...]`      |
 | colors-history-key | String            | `vue-colorpicker-history`                                                                                                                                                                |
-| sucker-hide        | Boolean           | `true`                                                                                                                                                                                   | `true` or `false`                       |
-| sucker-canvas      | HTMLCanvasElement | `null`                                                                                                                                                                                   | like `document.createElement('canvas')` |
-| sucker-area        | Array             | `[]`                                                                                                                                                                                     | like `[x1, y1, x2, y2]`                 |
 
 `color` is one-way data flow, so you can't use `v-model`. why? because you'll listen `changeColor` event do more things, so i think it's not necessary here.
 
@@ -89,18 +63,3 @@ $ pnpm add @caohenghu/vue-colorpicker
 | Name        | Type     | Args   | Description                     |
 | ----------- | -------- | ------ | ------------------------------- |
 | changeColor | Function | color  | `{ rgba: {}, hsv: {}, hex: ''}` |
-| openSucker  | Function | isOpen | `true` or `false`               |
-
-if you want use sucker, then `openSucker`, `sucker-hide`, `sucker-canvas`, `sucker-area` is necessary. when you click sucker button, you can click it again or press key of `esc` to exit.
-
-## Donate
-
-If this project has helped you,
-please have a cup of coffee for the author.
-
-[<img src="https://raw.githubusercontent.com/caohenghu/vue-colorpicker/master/src/img/paypal.png"
-      alt="Donate with PayPal"
-      height="80">](https://paypal.me/caohenghu?country.x=C2&locale.x=zh_XC)
-<img src="https://raw.githubusercontent.com/caohenghu/vue-colorpicker/master/src/img/wechat.jpg"
-alt="Donate with wechat"
-height="300">
