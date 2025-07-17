@@ -219,7 +219,9 @@ export default {
         inputHex(color) {
             const { r, g, b, a, h, s, v } = this.setColorValue(color)
             Object.assign(this, { r, g, b, a, h, s, v })
-            this.setText();
+            this.modelHex = color;
+            this.modelRgba = this.rgbaStringShort;
+            this.modelRal = this.ralString;
             this.$nextTick(() => {
                 this.$refs.saturation.renderColor()
                 this.$refs.saturation.renderSlide()
@@ -259,7 +261,9 @@ export default {
         inputRgba(color) {
             const { r, g, b, a, h, s, v } = this.setColorValue(color)
             Object.assign(this, { r, g, b, a, h, s, v })
-            this.setText();
+            this.modelHex = this.hexString;
+            this.modelRgba = color;
+            this.modelRal = this.ralString;
             this.$nextTick(() => {
                 this.$refs.saturation.renderColor()
                 this.$refs.saturation.renderSlide()
